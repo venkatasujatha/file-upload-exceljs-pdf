@@ -70,9 +70,20 @@ const uploadFile = async (req, res) => {
         data.push(mydata)
 
         console.log(data)
+        const resp1=await empRepo.save(data);
+    console.log(resp1)
+
+   
+    // console.log(file)
+    res.status(200).json({
+      message: 'file uploaded successfully',
+      res: resp1
+    })
        }
+       
 
       }
+     
 
     }   
 
@@ -83,15 +94,7 @@ const uploadFile = async (req, res) => {
     }
 
         
-    const resp1=await empRepo.save(data);
-    console.log(resp1)
-
-   
-    // console.log(file)
-    res.status(200).json({
-      message: 'file uploaded successfully',
-      res: resp1
-    })
+    
   } catch (err) {
     console.log(err.message)
     // res.send(400).json({
@@ -122,6 +125,44 @@ const uploadFile = async (req, res) => {
     return /^[0-9]+$/.test(str);
   }
 }
+const downloadFile = async (req, res) => {
+  try {
+   
+    
+    const resp = await empRepo.find({select:{
+      age:true
+    }});
+     //let count =await empRepo.count();
+     const count =resp.length
+     console.log("count",count);
+    console.log("sum1",resp.age)
+    let sum = 0;
+    
+     for (let i = 0; i < resp.length; i++) {
+      const res=resp[i].age;
+     console.log(res);
+     sum+=res;
+     }
+    console.log("sum",sum)
+   const avg =parseInt(sum/count)
+    //Create a pdf document
+    const doc = new pdf();
+    doc.pipe(fs.createWriteStream("./uploads/file.pdf"));
 
+    doc.fontSize(25).text(`totalrecords:${count}, averageage:${avg}`, 200, 200)
+    doc.end();
+    res.status(200).json({
+      message: 'get all records successfully',
+      res: {totalrecords:count,averageage:avg}
+    })
+   
+    
+  } catch (error) {
+    console.log(error.message);
+    res.send(400).json({
+      message: 'unable to get the records'
+    })
+  }
+};
 
-module.exports = { uploadFile }
+module.exports = { uploadFile,downloadFile }

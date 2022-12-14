@@ -88,9 +88,7 @@ const uploadFile = async (req, res) => {
   } catch (err) {
     
     console.log(err.message)
-    // res.send(400).json({
-    //   message: 'file upload is failed'
-    // })
+    
   }
   function validateHeaders(headerRow) {
 

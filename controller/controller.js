@@ -17,21 +17,22 @@ const uploadFile = async (req, res) => {
 
      const result = await workbook.xlsx.readFile(req.file.path);
 
-      const actualCount = workbook.worksheets[0].actualRowCount;
+      workbook.eachSheet(async (sheet)=>{
+        const actualCount =sheet.actualRowCount;
 
       console.log(actualCount)
 
-      const rowCount = workbook.worksheets[0].rowCount
+      const rowCount = sheet.rowCount
 
       console.log(rowCount)
 
-      const columnCount = workbook.worksheets[0].columnCount
+      const columnCount = sheet.columnCount
 
       console.log(columnCount)
 
       if(actualCount > 1 && columnCount == 2){
 
-      let resp = validateHeaders(workbook.worksheets[0].getRow(1).values)
+      let resp = validateHeaders(sheet.getRow(1).values)
 
       console.log(resp.status);
 
@@ -45,9 +46,9 @@ const uploadFile = async (req, res) => {
 
        for(let i = 2;i<=actualCount;i++) {
 
-       const name = workbook.worksheets[0].getRow(i).values[1];
+       const name = sheet.getRow(i).values[1];
 
-       const age = workbook.worksheets[0].getRow(i).values[2];
+       const age = sheet.getRow(i).values[2];
 
         console.log("name",name)
 
@@ -73,8 +74,8 @@ const uploadFile = async (req, res) => {
 
     }   
     const resp1=await empRepo.save(data);
-console.log("resp1",resp1)
-
+    console.log("resp1",resp1)
+    
 
 // console.log(file)
 // res.status(200).json({
@@ -88,6 +89,9 @@ console.log("resp1",resp1)
     }
 
         
+
+      })
+      
     
   } catch (err) {
     console.log(err.message)

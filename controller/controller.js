@@ -51,7 +51,7 @@ const uploadFile = async (req, res) => {
           Age: age,
         };
         data.push(mydata)
-        console.log("gfgf",data)
+        console.log("data",data)
        }     
       }  
     }   

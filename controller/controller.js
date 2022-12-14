@@ -45,15 +45,15 @@ const uploadFile = async (req, res) => {
 
        for(let i = 2;i<=actualCount;i++) {
 
-       const name = workbook.worksheets[0].getRow(i).values;
+       const name = workbook.worksheets[0].getRow(i).values[1];
 
-       const age = workbook.worksheets[0].getRow(i).values;
+       const age = workbook.worksheets[0].getRow(i).values[2];
 
         console.log("name",name)
 
        
 
-        if(onlyAlphabets(name) && containsOnlyNumbers(age)||name==undefined &&age==undefined){
+        if(onlyAlphabets(name) && containsOnlyNumbers(age)){
 
         let mydata = {
 
@@ -65,7 +65,7 @@ const uploadFile = async (req, res) => {
 
         data.push(mydata)
 
-        console.log(data)
+        console.log("gfgf",data)
   
        }     
 
@@ -73,7 +73,7 @@ const uploadFile = async (req, res) => {
 
     }   
     const resp1=await empRepo.save(data);
-console.log(resp1)
+console.log("resp1",resp1)
 
 
 // console.log(file)

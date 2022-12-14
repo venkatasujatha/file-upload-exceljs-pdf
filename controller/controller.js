@@ -5,95 +5,80 @@ const {dataSource} = require('../database')
 const empRepo = dataSource.getRepository('employee2');
 const pdf =require('pdfkit');
 const fs =require('fs')
+
 const uploadFile = async (req, res) => {
   let data = []
-  
+  const queryRunner = dataSource.createQueryRunner();
+  await queryRunner.connect();
   try {
     
-
+    await queryRunner.startTransaction();
+    console.log("transaction is started");
     const errormsg = []
-
     const workbook = new excelJs.Workbook();
-
      const result = await workbook.xlsx.readFile(req.file.path);
-
+     const sheetCount =workbook.worksheets.length;
+    console.log("TotalCount",sheetCount);
+    if (sheetCount === 0) {
+      errormsg.push({ message: "Workbook empty." });
+    } else{
       workbook.eachSheet(async (sheet)=>{
         const actualCount =sheet.actualRowCount;
-
       console.log(actualCount)
-
       const rowCount = sheet.rowCount
-
       console.log(rowCount)
-
       const columnCount = sheet.columnCount
-
       console.log(columnCount)
-
       if(actualCount > 1 && columnCount == 2){
-
       let resp = validateHeaders(sheet.getRow(1).values)
-
       console.log(resp.status);
-
       if(resp.status =='ERROR') {
-
         errormsg.push({location: resp.location, message: resp.message})
-
        console.log(errormsg)
-
       }else{
-
-       for(let i = 2;i<=actualCount;i++) {
-
+       for(let i = 2;i<=rowCount;i++) {
        const name = sheet.getRow(i).values[1];
-
        const age = sheet.getRow(i).values[2];
-
         console.log("name",name)
-
-       
-
+        if((name == undefined && age != undefined) || (name!= undefined && age == undefined)){
+          errormsg.push({message: " empty row exists"})
+          console.log(errormsg)
+          break;
+        }
         if(onlyAlphabets(name) && containsOnlyNumbers(age)){
-
         let mydata = {
-
           Name: name,
-
           Age: age,
-
         };
-
         data.push(mydata)
-
         console.log("gfgf",data)
-  
        }     
-
       }  
-
     }   
-    const resp1=await empRepo.save(data);
-    console.log("resp1",resp1)
-    
 
-// console.log(file)
-// res.status(200).json({
-//   message: 'file uploaded successfully',
-//   res: resp1
-// })
     }else{
 
       console.log("column count is more than 2")
+    }  
+      })
+
+    }   
+      if(errormsg.length>0)
+    {
+      return {status: 'ERROR', message: 'invalid rows present in sheet'}
 
     }
-
-        
-
-      })
-      
-    
+    else{
+      await queryRunner.commitTransaction();
+      console.log("data inserted successfully");
+      const resp1=await empRepo.save(data);
+      console.log("resp1",resp1)
+    }
+       
+     
   } catch (err) {
+    await queryRunner.rollbackTransaction();
+    console.log("error");
     console.log(err.message)
     // res.send(400).json({
     //   message: 'file upload is failed'

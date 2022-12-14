@@ -31,5 +31,6 @@ router.post(
   uploadFile.single('path'),
   fileController.uploadFile
 )
-router.get('/downloadFile',fileController.downloadFile)
+router.get('/downloadFile',fileController.downloadFile);
+
 module.exports = router

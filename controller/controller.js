@@ -5,15 +5,13 @@ const {dataSource} = require('../database')
 const empRepo = dataSource.getRepository('employee2');
 const pdf =require('pdfkit');
 const fs =require('fs')
-
+const axios =require('axios')
 const uploadFile = async (req, res) => {
   let data = []
-  const queryRunner = dataSource.createQueryRunner();
-  await queryRunner.connect();
+  
   try {
     
-    await queryRunner.startTransaction();
-    console.log("transaction is started");
+   
     const errormsg = []
     const workbook = new excelJs.Workbook();
      const result = await workbook.xlsx.readFile(req.file.path);
@@ -63,22 +61,27 @@ const uploadFile = async (req, res) => {
       })
 
     }   
+    let resp1;
       if(errormsg.length>0)
     {
       return {status: 'ERROR', message: 'invalid rows present in sheet'}
 
     }
+    
     else{
-      await queryRunner.commitTransaction();
-      console.log("data inserted successfully");
-      const resp1=await empRepo.save(data);
+      
+     resp1= await empRepo.save(data);
       console.log("resp1",resp1)
+      
     }
-       
+     if(resp1.length>0)
+     {
+      
+     await axios.get('http://localhost:4000/downloadFile')
+     }  
      
   } catch (err) {
-    await queryRunner.rollbackTransaction();
-    console.log("error");
+    
     console.log(err.message)
     // res.send(400).json({
     //   message: 'file upload is failed'
@@ -118,7 +121,7 @@ const downloadFile = async (req, res) => {
      //let count =await empRepo.count();
      const count =resp.length
      console.log("count",count);
-    console.log("sum1",resp.Age)
+    // console.log("sum1",resp.Age)
     let sum = 0;
     
      for (let i = 0; i < resp.length; i++) {

@@ -63,10 +63,6 @@ const uploadFile = async (req, res) => {
 
         };
 
-        // console.log(data1.Name)
-
-        // console.log(data1.Age)
-
         data.push(mydata)
 
         console.log(data)

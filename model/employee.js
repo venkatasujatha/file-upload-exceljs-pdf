@@ -8,13 +8,13 @@ const employee = new EntitySchema({
       type: 'int',
       generated: true
     },
-    name: {
+    Name: {
       type: 'varchar',
-      nullable: false
+      nullable: true
     },
-    age: {
+    Age: {
       type: 'int',
-      nullable: false
+      nullable: true
     }
   }
 })

@@ -4,7 +4,7 @@ const employee2 = require('../model/employee')
 const {dataSource} = require('../database')
 const empRepo = dataSource.getRepository('employee2');
 const pdf =require('pdfkit');
-const { Console } = require('console');
+const fs =require('fs')
 const uploadFile = async (req, res) => {
   let data = []
   
@@ -77,10 +77,10 @@ console.log("resp1",resp1)
 
 
 // console.log(file)
-res.status(200).json({
-  message: 'file uploaded successfully',
-  res: resp1
-})
+// res.status(200).json({
+//   message: 'file uploaded successfully',
+//   res: resp1
+// })
     }else{
 
       console.log("column count is more than 2")
@@ -124,16 +124,16 @@ const downloadFile = async (req, res) => {
    
     
     const resp = await empRepo.find({select:{
-      age:true
+      Age:true
     }});
      //let count =await empRepo.count();
      const count =resp.length
      console.log("count",count);
-    console.log("sum1",resp.age)
+    console.log("sum1",resp.Age)
     let sum = 0;
     
      for (let i = 0; i < resp.length; i++) {
-      const res=resp[i].age;
+      const res=resp[i].Age;
      console.log(res);
      sum+=res;
      }

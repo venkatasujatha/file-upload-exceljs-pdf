@@ -14,16 +14,16 @@ var storage = multer.diskStorage({
   }
 })
 const uploadFile = multer({
-  storage: storage
-//   limits: { fileSize: 1000000 },
-//   fileFilter: (req, file, cb) => {
-//     if (file.mimetype == 'image/tiff' || file.mimetype == 'image/png') {
-//       cb(null, true)
-//     } else {
-//       cb(null, false)
-//       return cb(new Error('Only .tiff and .png format allowed!'))
-//     }
-//   }
+  storage: storage,
+  limits: { fileSize: 1000000 },
+  fileFilter: (req, file, cb) => {
+    if (file.mimetype == "application/vnd.ms-excel" || file.mimetype == "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet") {
+      cb(null, true)
+    } else {
+      cb(null, false)
+      return cb(new Error('Only .xlsx and xls format allowed!'))
+    }
+  }
 })
 
 router.post(
@@ -31,5 +31,5 @@ router.post(
   uploadFile.single('path'),
   fileController.uploadFile
 )
-//router.get('/downloadFile',fileController.downloadFile)
+router.get('/downloadFile',fileController.downloadFile)
 module.exports = router

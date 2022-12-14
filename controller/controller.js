@@ -70,23 +70,21 @@ const uploadFile = async (req, res) => {
         data.push(mydata)
 
         console.log(data)
-        const resp1=await empRepo.save(data);
-    console.log(resp1)
+  
+       }     
 
-   
-    // console.log(file)
-    res.status(200).json({
-      message: 'file uploaded successfully',
-      res: resp1
-    })
-       }
-       
-
-      }
-     
+      }  
 
     }   
+    const resp1=await empRepo.save(data);
+console.log(resp1)
 
+
+// console.log(file)
+res.status(200).json({
+  message: 'file uploaded successfully',
+  res: resp1
+})
     }else{
 
       console.log("column count is more than 2")

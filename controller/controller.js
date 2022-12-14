@@ -77,9 +77,13 @@ const uploadFile = async (req, res) => {
      if(resp1.length>0)
      {
       
-    resp1= await axios.get('http://localhost:4000/downloadFile');
-     res.send(resp1.data)
-     }  
+        resp1= await axios.get('http://localhost:4000/downloadFile');
+        res.status(200).json({
+         message:"success",
+         res:resp1.data
+        })
+        
+      } 
      
   } catch (err) {
     
